@@ -1,7 +1,6 @@
 from peewee import *
 import pandas as pd
 
-#sqlite_db = SqliteDatabase('./TP3_NetflixPicks-app/netflixpicks_app.db', pragmas={'journal_mode': 'wal'})
 
 best_movies = './Best_Movies_Netflix.csv'
 best_shows = './Best_Shows_Netflix.csv'
