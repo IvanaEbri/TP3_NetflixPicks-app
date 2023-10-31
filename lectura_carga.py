@@ -24,7 +24,7 @@ class CreateDB():
         try:
             df_movies, df_shows, df_titles, df_credits = self.read_csv_proyect()
             movies_ds = df_movies.merge(df_titles, left_on='TITLE', right_on= 'title', how='inner')
-            showss_ds = df_shows.merge(df_titles, left_on='TITLE', right_on= 'title', how='inner')
+            shows_ds = df_shows.merge(df_titles, left_on='TITLE', right_on= 'title', how='inner')
             return movies_ds, df_shows, df_credits
         except Exception as e:
             print("Error al joinnear el dataset.", e)
