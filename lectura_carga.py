@@ -106,6 +106,8 @@ class CreateDB():
         except IntegrityError as e:
                 print("Error al insertar un nuevo registro en la tabla Series.", e)
 
+        sqlite_db.close()
+
     def actor(self, elem):
         if (elem =="ACTOR"): 
             return True
@@ -164,8 +166,9 @@ class CreateDB():
             exit()
 
 
-
-if __name__=='__main__':
+#Recuerde que carga duplicada la tabla Films, Shows y Credits dado que no tienen restriccion unique
+#Ejecutar solo en la creacion
+'''if __name__=='__main__':
     gestor = CreateDB()
     gestor.load_data()
-    print ("funco!")
+    print ("funco!")'''
