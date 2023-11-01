@@ -48,7 +48,7 @@ class AgeCertification (BaseModel):
     class Meta:
         db_table='age_certifications'
 
-class Films (BaseModel):
+class Film (BaseModel):
     """Entidad que recopila las mejores PELICULAS de Netflix"""
     id_film = AutoField(primary_key = True)
     film_title = TextField(null= False)
@@ -78,7 +78,7 @@ class Show (BaseModel):
     show_duration = IntegerField(null=False)
     show_genre = ForeignKeyField (MainGenre, backref='genres')
     show_production = ForeignKeyField(MainProduction, backref='productions')
-    show_title_id = TextField(null=False)
+    show_title_id = TextField(null=False, unique=True)
     show_age_certification = ForeignKeyField(AgeCertification, backref='age_certifications')
 
     def __str__(self):
@@ -86,3 +86,21 @@ class Show (BaseModel):
 
     class Meta:
         db_table = 'shows_netflix'
+
+class Credit (BaseModel):
+    id_credit = AutoField(primary_key = True)
+    credit_title_id = TextField(null=False)
+    name = TextField(null=False)
+    actor = BooleanField(default=False) #True sera actor y False director
+
+    def is_actor ():
+        if self.actor:
+            return "Actor/Actriz"
+        else:
+            return "Director/a"
+
+    def __str__(self):
+        return f"{self.name} - {self.is_actor}"
+
+    class Meta:
+        db_table = 'credits'
