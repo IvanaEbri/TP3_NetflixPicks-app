@@ -5,7 +5,7 @@ import random
 class NetflixPicks ():
 
     """Comunication será el diccionario que se edita con la infor desde el front para comuinicarse con el back y poder realizar los filtros pertinentes"""
-    cominication = {}
+    comunication = {}
     selection = ["peliculas", "series"]
     question = ["genero", "edad", "produccion"]
     button1 = ""
@@ -29,10 +29,10 @@ class NetflixPicks ():
             table = self.get_table(question)
             #selecciono la tabla, ordeno de manera random y tomo los primeros 4 resultados, convierto esto a una lista y asigno a las variables de boton
             query = list(table.select().order_by(fn.Random()).limit(4))
-            self.button1 = query[0]
-            self.button2 = query[1]
-            self.button3 = query[2]
-            self.button4 = query[3]
+            self.button1 = query[0].__str__
+            self.button2 = query[1].__str__
+            self.button3 = query[2].__str__
+            self.button4 = query[3].__str__
         except ValueError as e:
             print("La clave pasada es erronea. ", e)
         except OperationalError as e:
@@ -51,3 +51,10 @@ class NetflixPicks ():
             return entidad[key]
         else:
             raise ValueError
+
+    def read_q_result(self):
+        """Debo leer el diccionario que almacena 'pregunta: [respuesta/s]' y armar la query con la que haré el select sobre la tabla"""
+        try:
+            table= self.get_table('selection')
+        except:
+            pass
