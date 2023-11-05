@@ -66,7 +66,7 @@ class NetflixPicks ():
         else:
             raise NameError
 
-    def read_q_result(self):
+    def result(self):
         """Debo leer el diccionario que almacena 'pregunta: [respuesta/s]' y armar la query con la que haré el select sobre la tabla"""
         try:
             table = ""
