@@ -98,6 +98,12 @@ class NetflixPicks ():
                 resultados= list(table.select().where(
                     (table.show_genre<< generos) & (table.show_age_certification << edades) & (table.show_production << producciones)
                 ).order_by(fn.Random()).limit(4))
+
+            if resultados == []:
+                resultados = "No hay resultados para mostrarte :("
+            else: 
+                if len(resultado)<4:
+                    resultados.append("No hemos hallado más resultados :/")
             return  resultados 
         except ValueError:
             print("No se han seleccionado los parametros indicados")
