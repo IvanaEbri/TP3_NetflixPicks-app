@@ -22,6 +22,9 @@ class MainGenre(BaseModel):
     
     def __str__(self):
         return self.genre
+    
+    def get_id(self):
+        return self.id_genre
 
     class Meta:
         db_table='genres'
@@ -34,6 +37,9 @@ class MainProduction (BaseModel):
     def __str__(self):
         return self.production
 
+    def get_id(self):
+        return self.id_production
+
     class Meta:
         db_table='productions'
 
@@ -44,6 +50,9 @@ class AgeCertification (BaseModel):
     
     def __str__(self):
         return self.age_certification
+
+    def get_id(self):
+        return self.id_age_certification
 
     class Meta:
         db_table='age_certifications'
@@ -58,11 +67,14 @@ class Film (BaseModel):
     film_duration = IntegerField(null=False)
     film_genre = ForeignKeyField (MainGenre, backref='genres')
     film_production = ForeignKeyField(MainProduction, backref='productions')
-    film_title_id = TextField(null=False)
+    film_title_id = TextField(null=False, unique=True)
     film_age_certification = ForeignKeyField(AgeCertification, backref='age_certifications')
 
     def __str__(self):
         return self.film_title
+
+    def get_id(self):
+        return self.id_film
 
     class Meta:
         db_table = 'films_netflix'
@@ -84,6 +96,9 @@ class Show (BaseModel):
     def __str__(self):
         return self.show_title
 
+    def get_id(self):
+        return self.id_show
+
     class Meta:
         db_table = 'shows_netflix'
 
@@ -101,6 +116,9 @@ class Credit (BaseModel):
 
     def __str__(self):
         return f"{self.name} - {self.is_actor}"
+
+    def get_id(self):
+        return self.id_credit
 
     class Meta:
         db_table = 'credits'
