@@ -7,6 +7,7 @@ class MainWindow:
         self.root = root
         self.root.title("NetflixPicks")
         self.root.overrideredirect(True)
+        self.root.configure(bg="#240B37")
 
         # Cargar la imagen de fondo
         try:
@@ -16,9 +17,7 @@ class MainWindow:
             self.background_transp = ImageTk.PhotoImage(transp)
             
         except:
-            print("No se pudo cargar la imagen")
-
-        
+            print("No se pudo cargar la imagen")      
 
         # Crear una etiqueta para mostrar la imagen de fondo
         background_label = tk.Label(root, image=self.background_image)
