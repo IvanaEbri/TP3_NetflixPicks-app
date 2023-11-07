@@ -102,12 +102,12 @@ class NetflixPicks ():
             if resultados == []:
                 resultados = "No hay resultados para mostrarte :("
             else: 
-                if len(resultado)<4:
+                if len(resultados)<4:
                     resultados.append("No hemos hallado más resultados :/")
             return  resultados 
-        except ValueError:
-            print("No se han seleccionado los parametros indicados")
-        except NameError:
-            print("Los paramtros seleccionados no son correctos")
+        except ValueError as e:
+            print("No se han seleccionado los parametros indicados.",e)
+        except NameError as e:
+            print("Los paramtros seleccionados no son correctos.",e)
         '''except Exception as e:
             print("Error sin definir aún. Eevee is working here", e)'''
