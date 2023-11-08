@@ -27,8 +27,8 @@ class NetflixPicks ():
         }
 
     def conect_db (self):
+        """Intento de conexion a la base de datos"""
         try:
-            """Intento de conexion a la base de datos"""
             sqlite_db.connect()
             sqlite_db.close()
         except OperationalError as e:
@@ -102,7 +102,7 @@ class NetflixPicks ():
             if resultados == []:
                 resultados = "No hay resultados para mostrarte :("
             else: 
-                if len(resultado)<4:
+                if len(resultados)<4:
                     resultados.append("No hemos hallado más resultados :/")
             return  resultados 
         except ValueError:

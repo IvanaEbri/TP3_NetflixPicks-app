@@ -62,7 +62,7 @@ class MainWindow:
         # Variable de texto asociada al cuadro de entrada
         self.client_name_var = tk.StringVar()
         self.name_entry = tk.Entry(root, textvariable=self.client_name_var)
-        self.name_entry.pack(expand=True, pady=10)
+        self.name_entry.pack(expand=True, pady=10) 
 
         # Crear un marco para los botones y centrarlos
         button_frame = tk.Frame(root)
