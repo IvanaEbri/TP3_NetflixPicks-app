@@ -2,6 +2,7 @@ from tkinter import *
 import Pmw
 from PIL import Image, ImageTk
 from app_logic import *
+from decodificador import *
 
 class MainWindow:
     def __init__(self, root):
@@ -11,10 +12,12 @@ class MainWindow:
         root.iconbitmap(r"Imagenes\\Netflix.ico")
         root.configure(bg="#240B37")
 
-        self.app = NetflixPicks()
+        self.app = NetflixPicks() # Vinculación con el módulo de consultas.
+
         # Declaracion de variables
         self.current_view = 0
         self.views = []
+        self.gustos = []
         self.client_name = ""
         self.selection = ""
 
@@ -37,6 +40,7 @@ class MainWindow:
         x_position = (screen_width - window_width) // 2
         y_position = (screen_height - window_height) // 2
         self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+        self.window_w = window_width
 
     def create_widgets(self):  # Crea la ventana donde se va a trabajar.
         self.frame0 = Frame(self.root, height=30, bg="Black")  # Marco superior
@@ -91,7 +95,7 @@ class MainWindow:
         self.label.pack(pady=10)
           
         self.q_frame = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
-        self.q_frame.pack(fill='both', expand=True)
+        self.q_frame.pack(fill="none", expand=True)
         self.q_frame.grid_rowconfigure(0, weight=1)
 
         self.question_label_1 = Label(self.q_frame, text="Por favor ingresa tu nombre o usuario.", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White")
@@ -99,7 +103,7 @@ class MainWindow:
 
         # Variable de texto asociada al cuadro de entrada
         self.client_name_var = StringVar()
-        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var, width=50, justify="center")
+        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=50, justify="center")
         self.usuario.pack(pady=10, anchor="s")
 
         self.usuario.bind("<Return>", self.return_name) # Vincular el evento Enter en el cuadro de texto al botón
@@ -129,33 +133,51 @@ class MainWindow:
         #self.next_button["state"] = "disabled" # Desactivar el botón inicial
 
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=10)
+        self.question_label_1.pack(side="top", pady=15)
 
-        self.question_label_2 = Label(self.q_frame, text=self.app.question_text[0], bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_2.pack(side="top", pady=10)
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2.pack(side="top", pady=10, padx=15)
+        self.app.select_options(self.app.question[0])
+
+        self.botones()
  
     def view4(self):  # Vista Num. 4.
         """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
+        #self.next_button["state"] = "disabled" # Desactivar el botón inicial
+        self.q_frame2.destroy()
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=10)
+        self.question_label_1.pack(side="top", pady=15)
 
-        self.question_label_2 = Label(self.q_frame, text=self.app.question_text[1], bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
+
+        """self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
+        self.q_frame2.pack(fill="none", expand=False, pady=10)"""
+
+        self.app.select_options(self.app.question[1])
+        self.botones()
 
     def view5(self): # Vista Num. 5.
         """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
-
+        #self.next_button["state"] = "disabled" # Desactivar el botón inicial
+        self.q_frame2.destroy()
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=10)
+        self.question_label_1.pack(side="top", pady=15)
 
-        self.question_label_2 = Label(self.q_frame, text=self.app.question_text[2], bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
+
+        """self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
+        self.q_frame2.pack(fill="none", expand=False, pady=10)"""
+
+        self.app.select_options(self.app.question[2])
+        self.botones()
 
     def view6(self): # Vista Num. 6 y final.
         """Vista final del programa, se muestran los resultados de las busquedas."""
-
+        self.q_frame2.destroy()
         self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=10)
+        self.question_label_1.pack(side="bottom", pady=10)
 
         self.next_button.configure(text="Salir", command=self.close_window)
 
@@ -182,13 +204,31 @@ class MainWindow:
         self.button_serie.config(relief="raised")
         self.next_button["state"] = "normal"
         self.selection = self.app.selection[0]
-    
+        self.app.comunication[self.app.selected]= self.selection
+
     def seleccion_series(self): # Funciones asignadas a la seleccion de series.
         self.button_serie.config(relief="sunken")
         self.button_pelicula.config(relief="raised")
         self.next_button["state"] = "normal"
         self.selection = self.app.selection[1]
-    
+        self.app.comunication[self.app.selected]= self.selection
+
+    def insetr_sel(self, item):
+        self.gustos.append(item)
+
+    def botones(self):
+        self.button_a = Button(self.q_frame, relief="raised", text=self.app.button1, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_a.pack(side="left", padx=15, pady=20)
+
+        self.button_b = Button(self.q_frame, relief="raised", text=self.app.button2, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_b.pack(side="left", padx=15, pady=20)
+
+        self.button_c = Button(self.q_frame, relief="raised", text=self.app.button3, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_c.pack(side="left", padx=15, pady=20)
+
+        self.button_d = Button(self.q_frame, relief="raised", text=self.app.button4, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_d.pack(side="left", padx=15)
+
 def main():
     root = Tk()
     application = MainWindow(root)
