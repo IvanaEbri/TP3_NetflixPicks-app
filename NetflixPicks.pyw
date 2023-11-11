@@ -2,7 +2,6 @@ from tkinter import *
 import Pmw
 from PIL import Image, ImageTk
 from app_logic import *
-from decodificador import *
 
 class MainWindow:
     def __init__(self, root):
@@ -17,7 +16,7 @@ class MainWindow:
         # Declaracion de variables
         self.current_view = 0
         self.views = []
-        self.gustos = []
+        self.lista_seleccionados = []
         self.client_name = ""
         self.selection = ""
 
@@ -106,9 +105,11 @@ class MainWindow:
         self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=50, justify="center")
         self.usuario.pack(pady=10, anchor="s")
 
-        self.usuario.bind("<Return>", self.return_name) # Vincular el evento Enter en el cuadro de texto al botón
+        self.usuario.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
 
         self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
+
+        self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
 
     def view2(self): # Vista Num. 2.
         """Vista de bienvenida con las opciones para elegir la asistencia."""
@@ -130,8 +131,6 @@ class MainWindow:
         """Vista que permite dar la primera eleccion de las preferencias de busqueda."""
         self.label.destroy()
         self.q_frame2.destroy()
-        #self.next_button["state"] = "disabled" # Desactivar el botón inicial
-
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
@@ -143,49 +142,49 @@ class MainWindow:
  
     def view4(self):  # Vista Num. 4.
         """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
-        #self.next_button["state"] = "disabled" # Desactivar el botón inicial
         self.q_frame2.destroy()
+        self.app.comunication[self.app.question[0]]=self.lista_seleccionados
+        self.lista_seleccionados = []
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
-        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[1]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
-
-        """self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
-        self.q_frame2.pack(fill="none", expand=False, pady=10)"""
 
         self.app.select_options(self.app.question[1])
         self.botones()
 
     def view5(self): # Vista Num. 5.
         """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
-        #self.next_button["state"] = "disabled" # Desactivar el botón inicial
         self.q_frame2.destroy()
+        self.app.comunication[self.app.question[1]]=self.lista_seleccionados
+        self.lista_seleccionados = []
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
-        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[2]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
 
-        """self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
-        self.q_frame2.pack(fill="none", expand=False, pady=10)"""
-
         self.app.select_options(self.app.question[2])
-        self.botones()
+        self.botones()        
 
     def view6(self): # Vista Num. 6 y final.
         """Vista final del programa, se muestran los resultados de las busquedas."""
         self.q_frame2.destroy()
-        self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="bottom", pady=10)
-
+        self.app.comunication[self.app.question[2]]=self.lista_seleccionados
+        self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n\n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="bottom", pady=10)    
+        
         self.next_button.configure(text="Salir", command=self.close_window)
+
+        print(self.app.comunication)
 
     def update_view(self): # Verifica las vistas, elimina la anterior y carga la nueva.
         if hasattr(self, 'q_frame'):
             for widget in self.q_frame.winfo_children():
                 widget.destroy()
         self.views[self.current_view]()
+        self.actualizar_boton()
     
     def enable_button(self, *args): # Habilitar el botón si hay texto en el cuadro de texto.
         if len(self.usuario.get()) > 0:
@@ -197,37 +196,59 @@ class MainWindow:
         self.root.destroy()
 
     def return_name(self, event=None): # Obtiene el nombre de la barra.
-        self.client_name = self.client_name_var.get().upper()
+        self.client_name = self.client_name_var.get().upper()  
 
     def seleccion_peliculas(self): # Funciones asignadas a la seleccion de peliculas.
-        self.button_pelicula.config(relief="sunken")
-        self.button_serie.config(relief="raised")
+        self.button_pelicula.config(relief="sunken", font=("Bebas neue", 13))
+        self.button_serie.config(relief="raised", font=("Bebas neue", 12, "bold"))
         self.next_button["state"] = "normal"
         self.selection = self.app.selection[0]
         self.app.comunication[self.app.selected]= self.selection
 
     def seleccion_series(self): # Funciones asignadas a la seleccion de series.
-        self.button_serie.config(relief="sunken")
-        self.button_pelicula.config(relief="raised")
+        self.button_serie.config(relief="sunken", font=("Bebas neue", 13))
+        self.button_pelicula.config(relief="raised", font=("Bebas neue", 12, "bold"))
         self.next_button["state"] = "normal"
         self.selection = self.app.selection[1]
         self.app.comunication[self.app.selected]= self.selection
 
-    def insetr_sel(self, item):
-        self.gustos.append(item)
+    def apretar_button(self, boton, texto): # Funcion para cambiar el estado del boton y agregar la selección. 
+        if texto in self.lista_seleccionados:
+            # Si el botón ya está en la lista, quitarlo
+            self.lista_seleccionados.remove(texto)
+            boton.config(relief="raised", font=("Bebas neue", 12, "bold"))
+        else:
+            # Si el botón no está en la lista, agregarlo
+            self.lista_seleccionados.append(texto)
+            boton.config(relief="sunken", font=("Bebas neue", 13))
+            print(texto)   
+        self.actualizar_boton()  
 
-    def botones(self):
-        self.button_a = Button(self.q_frame, relief="raised", text=self.app.button1, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+    def botones(self): # Funcion que crea los botones segun lo que se necesite. 
+        self.button_a = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_a, self.app.button1), text=self.app.button1, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
         self.button_a.pack(side="left", padx=15, pady=20)
 
-        self.button_b = Button(self.q_frame, relief="raised", text=self.app.button2, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_b = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_b, self.app.button2), text=self.app.button2, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
         self.button_b.pack(side="left", padx=15, pady=20)
 
-        self.button_c = Button(self.q_frame, relief="raised", text=self.app.button3, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_c = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_c, self.app.button3), text=self.app.button3, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
         self.button_c.pack(side="left", padx=15, pady=20)
 
-        self.button_d = Button(self.q_frame, relief="raised", text=self.app.button4, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_d = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_d, self.app.button4), text=self.app.button4, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
         self.button_d.pack(side="left", padx=15)
+
+    def actualizar_boton(self):
+        if self.lista_seleccionados:
+            self.next_button["state"] = "normal"
+        else:
+            self.next_button["state"] = "disabled"
+
+    def mostrar_resultados(self):
+        
+        self.resultados = self.app.result()
+        for i in range(len(self.resultados)):
+            print(f'{i+1} - {self.resultados[i]}')
+
 
 def main():
     root = Tk()
