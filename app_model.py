@@ -108,7 +108,7 @@ class Credit (BaseModel):
     name = TextField(null=False)
     actor = BooleanField(default=False) #True sera actor y False director
 
-    def is_actor ():
+    def is_actor (self):
         if self.actor:
             return "Actor/Actriz"
         else:

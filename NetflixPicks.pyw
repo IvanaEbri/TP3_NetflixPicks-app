@@ -19,6 +19,10 @@ class MainWindow:
         self.lista_seleccionados = []
         self.client_name = ""
         self.selection = ""
+        self.respuesta1 = []
+        self.respuesta2 = []
+        self.respuesta3 = []
+        self.resultado = []
 
         try: # Carga de la imagen de fondo de las primeras vistas
             origina_image = Image.open(r"Imagenes\\Fondo NFPKS.jpg")
@@ -143,7 +147,8 @@ class MainWindow:
     def view4(self):  # Vista Num. 4.
         """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
         self.q_frame2.destroy()
-        self.app.comunication[self.app.question[0]]=self.lista_seleccionados
+        for item in self.lista_seleccionados:
+            self.respuesta1.append(str(item))
         self.lista_seleccionados = []
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
@@ -157,7 +162,8 @@ class MainWindow:
     def view5(self): # Vista Num. 5.
         """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
         self.q_frame2.destroy()
-        self.app.comunication[self.app.question[1]]=self.lista_seleccionados
+        for item in self.lista_seleccionados:
+            self.respuesta2.append(str(item))
         self.lista_seleccionados = []
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
@@ -166,18 +172,23 @@ class MainWindow:
         self.question_label_2.pack(side="top", pady=10)
 
         self.app.select_options(self.app.question[2])
-        self.botones()        
+        self.botones()
 
     def view6(self): # Vista Num. 6 y final.
         """Vista final del programa, se muestran los resultados de las busquedas."""
         self.q_frame2.destroy()
-        self.app.comunication[self.app.question[2]]=self.lista_seleccionados
+        for item in self.lista_seleccionados:
+            self.respuesta3.append(str(item))
         self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n\n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="bottom", pady=10)    
         
         self.next_button.configure(text="Salir", command=self.close_window)
 
-        print(self.app.comunication)
+        self.app.comunication[self.app.question[0]]=self.respuesta1
+        self.app.comunication[self.app.question[1]]=self.respuesta2
+        self.app.comunication[self.app.question[2]]=self.respuesta3
+
+        self.mostrar_resultados()
 
     def update_view(self): # Verifica las vistas, elimina la anterior y carga la nueva.
         if hasattr(self, 'q_frame'):
@@ -220,10 +231,9 @@ class MainWindow:
         else:
             # Si el botón no está en la lista, agregarlo
             self.lista_seleccionados.append(texto)
-            boton.config(relief="sunken", font=("Bebas neue", 13))
-            print(texto)   
-        self.actualizar_boton()  
-
+            boton.config(relief="sunken", font=("Bebas neue", 13)) 
+        self.actualizar_boton()
+        
     def botones(self): # Funcion que crea los botones segun lo que se necesite. 
         self.button_a = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_a, self.app.button1), text=self.app.button1, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
         self.button_a.pack(side="left", padx=15, pady=20)
@@ -235,20 +245,23 @@ class MainWindow:
         self.button_c.pack(side="left", padx=15, pady=20)
 
         self.button_d = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_d, self.app.button4), text=self.app.button4, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
-        self.button_d.pack(side="left", padx=15)
+        self.button_d.pack(side="left", padx=15, pady=20)
 
-    def actualizar_boton(self):
+    def actualizar_boton(self): # Funcion que actualiza el estado del boton. 
         if self.lista_seleccionados:
             self.next_button["state"] = "normal"
         else:
             self.next_button["state"] = "disabled"
 
-    def mostrar_resultados(self):
-        
-        self.resultados = self.app.result()
-        for i in range(len(self.resultados)):
-            print(f'{i+1} - {self.resultados[i]}')
-
+    def mostrar_resultados(self): # Funcion para mostrar el resultado de la busqueda. 
+        self.resultado = self.app.result()
+        if len(self.resultado) > 4:
+            result_label = Label(self.root, text=str(self.resultado), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
+            result_label.pack(pady=5, expand=True, padx=30)
+        else:
+            for i in range(len(self.resultado)):
+                result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
+                result_label.pack(pady=5, expand=True, padx=30)
 
 def main():
     root = Tk()
