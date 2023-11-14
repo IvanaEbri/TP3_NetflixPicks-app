@@ -3,8 +3,10 @@ import Pmw
 from PIL import Image, ImageTk
 from app_logic import *
 
+
 class MainWindow:
-    def __init__(self, root):
+    global nombre_cliente
+    def __init__(self, root, nombre=""):
         self.root = root
         self.root.title("NetflixPicks")
         self.root.overrideredirect(True)
@@ -14,10 +16,11 @@ class MainWindow:
         self.app = NetflixPicks() # Vinculación con el módulo de consultas.
 
         # Declaracion de variables
+
         self.current_view = 0
         self.views = []
         self.lista_seleccionados = []
-        self.client_name = ""
+        self.client_name = nombre
         self.selection = ""
         self.respuesta1 = []
         self.respuesta2 = []
@@ -70,7 +73,7 @@ class MainWindow:
         self.next_button = Button(self.frame2, text="Continuar", command=self.next_view, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
         self.next_button.pack(side="right", anchor="s", padx=10, pady=10)        
         self.next_button["state"] = "disabled" # Desactivar el botón inicial
-
+            
     def ini_window(self): # Itinera las veistas cargadas.
         self.q_frame = LabelFrame()
         self.client_name_var = StringVar()
@@ -92,103 +95,20 @@ class MainWindow:
             self.current_view += 1
             self.update_view()
 
-    def view1(self): # Vista Num. 1.
-        """Vista inicial que permite conocer a quien se va a asistir."""
-        self.label = Label(self.frame1, image=self.imagen, borderwidth=0)
-        self.label.pack(pady=10)
-          
-        self.q_frame = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
-        self.q_frame.pack(fill="none", expand=True)
-        self.q_frame.grid_rowconfigure(0, weight=1)
+    def reset(self): # Crea una nueva instancia de la aplicación
+        self.root.destroy() # Cierra la ventana actual
+        new_root = Tk()
+        new_app = MainWindow(new_root, self.client_name)
+        new_root.mainloop()
 
-        self.question_label_1 = Label(self.q_frame, text="Por favor ingresa tu nombre o usuario.", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White")
-        self.question_label_1.pack(side="top", pady=10)
-
-        # Variable de texto asociada al cuadro de entrada
-        self.client_name_var = StringVar()
-        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=50, justify="center")
-        self.usuario.pack(pady=10, anchor="s")
-
-        self.usuario.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
-
-        self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
-
-        self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
-
-    def view2(self): # Vista Num. 2.
-        """Vista de bienvenida con las opciones para elegir la asistencia."""
-        self.question_label_1 = Label(self.q_frame, text=f"¡BIENVENIDO/A {self.client_name}! \n SELECCIONE UNA OPCIÓN PARA AYUDARLE", bg="#240B37", font=("Bebas neue", 12, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top")
-
-        self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
-        self.q_frame2.pack(fill="none", expand=False, pady=10)
-        self.q_frame2.grid_rowconfigure(0, weight=1)   
-
-        self.button_pelicula = Button(self.q_frame2, relief="raised", text="PELÍCULAS", width=10, height=2, command=self.seleccion_peliculas, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
-        self.button_serie = Button(self.q_frame2, relief="raised", text="SERIES", width=10, height=2, command=self.seleccion_series, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
-        self.button_pelicula.pack(side=LEFT, padx=15)
-        self.button_serie.pack(side=RIGHT, padx=15)
-
-        self.next_button["state"] = "disabled" # Desactivar el botón inicial
-
-    def view3(self): # Vista Num. 3.
-        """Vista que permite dar la primera eleccion de las preferencias de busqueda."""
-        self.label.destroy()
-        self.q_frame2.destroy()
-        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=15)
-
-        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
-        self.question_label_2.pack(side="top", pady=10, padx=15)
-        self.app.select_options(self.app.question[0])
-
-        self.botones()
- 
-    def view4(self):  # Vista Num. 4.
-        """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
-        self.q_frame2.destroy()
-        for item in self.lista_seleccionados:
-            self.respuesta1.append(str(item))
-        self.lista_seleccionados = []
-        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=15)
-
-        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[1]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
-        self.question_label_2.pack(side="top", pady=10)
-
-        self.app.select_options(self.app.question[1])
-        self.botones()
-
-    def view5(self): # Vista Num. 5.
-        """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
-        self.q_frame2.destroy()
-        for item in self.lista_seleccionados:
-            self.respuesta2.append(str(item))
-        self.lista_seleccionados = []
-        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="top", pady=15)
-
-        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[2]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
-        self.question_label_2.pack(side="top", pady=10)
-
-        self.app.select_options(self.app.question[2])
-        self.botones()
-
-    def view6(self): # Vista Num. 6 y final.
-        """Vista final del programa, se muestran los resultados de las busquedas."""
-        self.q_frame2.destroy()
-        for item in self.lista_seleccionados:
-            self.respuesta3.append(str(item))
-        self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n\n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
-        self.question_label_1.pack(side="bottom", pady=10)    
-        
-        self.next_button.configure(text="Salir", command=self.close_window)
-
-        self.app.comunication[self.app.question[0]]=self.respuesta1
-        self.app.comunication[self.app.question[1]]=self.respuesta2
-        self.app.comunication[self.app.question[2]]=self.respuesta3
-
-        self.mostrar_resultados()
+    def refresh_button (self): # Funcion para resetear los botones de seleccion.
+        if self.current_view < len(self.views):
+            self.button_a.destroy()
+            self.button_b.destroy()
+            self.button_c.destroy()
+            self.button_d.destroy()
+            self.app.select_options(self.app.question[0])
+            self.botones()
 
     def update_view(self): # Verifica las vistas, elimina la anterior y carga la nueva.
         if hasattr(self, 'q_frame'):
@@ -207,7 +127,7 @@ class MainWindow:
         self.root.destroy()
 
     def return_name(self, event=None): # Obtiene el nombre de la barra.
-        self.client_name = self.client_name_var.get().upper()  
+        self.client_name = self.client_name_var.get().upper()
 
     def seleccion_peliculas(self): # Funciones asignadas a la seleccion de peliculas.
         self.button_pelicula.config(relief="sunken", font=("Bebas neue", 13))
@@ -256,12 +176,120 @@ class MainWindow:
     def mostrar_resultados(self): # Funcion para mostrar el resultado de la busqueda. 
         self.resultado = self.app.result()
         if len(self.resultado) > 4:
-            result_label = Label(self.root, text=str(self.resultado), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
-            result_label.pack(pady=5, expand=True, padx=30)
+            self.result_label = Label(self.root, text=str(self.resultado), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
+            self.result_label.pack(pady=5, expand=True, padx=30)
         else:
             for i in range(len(self.resultado)):
-                result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
-                result_label.pack(pady=5, expand=True, padx=30)
+                self.result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
+                self.result_label.pack(pady=5, expand=True, padx=30)
+
+    def view1(self): # Vista Num. 1.
+        """Vista inicial que permite conocer a quien se va a asistir."""
+        self.label = Label(self.frame1, image=self.imagen, borderwidth=0)
+        self.label.pack(pady=10)
+          
+        self.q_frame = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
+        self.q_frame.pack(fill="none", expand=True)
+        self.q_frame.grid_rowconfigure(0, weight=1)
+
+        self.question_label_1 = Label(self.q_frame, text="Por favor ingresa tu nombre o usuario.", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White")
+        self.question_label_1.pack(side="top", pady=10)
+
+        # Variable de texto asociada al cuadro de entrada
+        self.client_name_var = StringVar()
+        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=50, justify="center")
+        self.usuario.pack(pady=10, anchor="s")
+
+        self.usuario.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
+
+        self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
+
+        self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
+
+        if self.client_name != "":
+            self.next_view()
+
+    def view2(self): # Vista Num. 2.
+        """Vista de bienvenida con las opciones para elegir la asistencia."""
+        self.question_label_1 = Label(self.q_frame, text=f"¡BIENVENIDO/A {self.client_name}! \n SELECCIONE UNA OPCIÓN PARA AYUDARLE", bg="#240B37", font=("Bebas neue", 12, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="top")
+
+        self.q_frame2 = LabelFrame(self.frame1, bg="#240B37", borderwidth=0)
+        self.q_frame2.pack(fill="none", expand=False, pady=10)
+        self.q_frame2.grid_rowconfigure(0, weight=1)   
+
+        self.button_pelicula = Button(self.q_frame2, relief="raised", text="PELÍCULAS", width=10, height=2, command=self.seleccion_peliculas, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_serie = Button(self.q_frame2, relief="raised", text="SERIES", width=10, height=2, command=self.seleccion_series, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_pelicula.pack(side=LEFT, padx=15)
+        self.button_serie.pack(side=RIGHT, padx=15)
+
+        self.next_button["state"] = "disabled" # Desactivar el botón inicial
+
+    def view3(self): # Vista Num. 3.
+        """Vista que permite dar la primera eleccion de las preferencias de busqueda."""
+        self.label.destroy()
+        self.q_frame2.destroy()
+        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="top", pady=15)
+
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2.pack(side="top", pady=10, padx=15)
+        self.app.select_options(self.app.question[0])
+
+        self.reset_button = Button(self.frame2, text="Recargar", command=self.refresh_button, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
+        self.reset_button.pack(side="left", anchor="s", padx=10, pady=10)
+
+        self.botones()
+ 
+    def view4(self):  # Vista Num. 4.
+        """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
+        self.q_frame2.destroy()
+        for item in self.lista_seleccionados:
+            self.respuesta1.append(str(item))
+        self.lista_seleccionados = []
+        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="top", pady=15)
+
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[1]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2.pack(side="top", pady=10)
+
+        self.app.select_options(self.app.question[1])
+        self.botones()
+
+    def view5(self): # Vista Num. 5.
+        """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
+        self.q_frame2.destroy()
+        for item in self.lista_seleccionados:
+            self.respuesta2.append(str(item))
+        self.lista_seleccionados = []
+        self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="top", pady=15)
+
+        self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[2]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
+        self.question_label_2.pack(side="top", pady=10)
+
+        self.app.select_options(self.app.question[2])
+        self.botones()
+
+    def view6(self): # Vista Num. 6 y final.
+        """Vista final del programa, se muestran los resultados de las busquedas."""
+        self.q_frame2.destroy()
+        for item in self.lista_seleccionados:
+            self.respuesta3.append(str(item))
+        self.question_label_1 = Label(self.q_frame, text=F"¡¡{self.client_name.upper()}!! \n\n LE SUGERIMOS LA SIGUIENTE SELECCION DE {self.selection.upper()}", bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
+        self.question_label_1.pack(side="bottom", pady=10)    
+        
+        self.next_button.configure(text="Salir", command=self.close_window)
+
+        self.app.comunication[self.app.question[0]]=self.respuesta1
+        self.app.comunication[self.app.question[1]]=self.respuesta2
+        self.app.comunication[self.app.question[2]]=self.respuesta3
+
+        self.mostrar_resultados()
+        self.current_view = 1
+
+
+        self.reset_button.configure(text="Reiniciar", command=self.reset)
 
 def main():
     root = Tk()
