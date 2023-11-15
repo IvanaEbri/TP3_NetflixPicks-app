@@ -1,8 +1,9 @@
 from tkinter import *
+from tkinter import messagebox
 import Pmw
 from PIL import Image, ImageTk
 from app_logic import *
-
+import sqlite3
 
 class MainWindow:
     global nombre_cliente
@@ -37,6 +38,8 @@ class MainWindow:
         self.setup_window()
         self.create_widgets()
         self.ini_window()
+        self.conn = sqlite3.connect("usuarios.db")
+        self.create_table()
 
     def setup_window(self): # Configurar la ventana principal.
         screen_width = self.root.winfo_screenwidth()
@@ -70,9 +73,13 @@ class MainWindow:
         balloon = Pmw.Balloon(self.root) # Decorador con la info del boton
         balloon.bind(cerrar_button, "Cerrar")     
 
-        self.next_button = Button(self.frame2, text="Continuar", command=self.next_view, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
+        self.next_button = Button(self.frame2, text="Continuar", command=self.login, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
         self.next_button.pack(side="right", anchor="s", padx=10, pady=10)        
-        self.next_button["state"] = "disabled" # Desactivar el botón inicial
+        self.next_button["state"] = "disabled" # Desactivar el botón
+
+        self.reset_button = Button(self.frame2, text="Registrarse", command=self.register, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
+        self.reset_button.pack(side="left", anchor="s", padx=10, pady=10)
+        self.reset_button["state"] = "disabled" # Desactivar el botón
             
     def ini_window(self): # Itinera las veistas cargadas.
         self.q_frame = LabelFrame()
@@ -107,7 +114,7 @@ class MainWindow:
             self.button_b.destroy()
             self.button_c.destroy()
             self.button_d.destroy()
-            self.app.select_options(self.app.question[0])
+            self.app.select_options(self.questions)
             self.botones()
 
     def update_view(self): # Verifica las vistas, elimina la anterior y carga la nueva.
@@ -118,10 +125,12 @@ class MainWindow:
         self.actualizar_boton()
     
     def enable_button(self, *args): # Habilitar el botón si hay texto en el cuadro de texto.
-        if len(self.usuario.get()) > 0:
-            self.next_button["state"] = "normal"
+        if len(self.client_name_var.get()) > 0 and len(self.password_var.get()) > 3:
+            self.next_button["state"] = NORMAL
+            self.reset_button["state"] = NORMAL
         else:
-            self.next_button["state"] = "disabled"
+            self.next_button["state"] = DISABLED
+            self.reset_button["state"] = DISABLED
 
     def close_window(self): # Cerrar la ventana.
         self.root.destroy()
@@ -192,17 +201,25 @@ class MainWindow:
         self.q_frame.pack(fill="none", expand=True)
         self.q_frame.grid_rowconfigure(0, weight=1)
 
-        self.question_label_1 = Label(self.q_frame, text="Por favor ingresa tu nombre o usuario.", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White")
-        self.question_label_1.pack(side="top", pady=10)
+        self.question_label_1 = Label(self.q_frame, text="Por favor ingrese su usuario:", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White")
+        self.question_label_1.pack(side="top", pady=5)
 
         # Variable de texto asociada al cuadro de entrada
         self.client_name_var = StringVar()
-        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=50, justify="center")
-        self.usuario.pack(pady=10, anchor="s")
+        self.usuario = Entry(self.q_frame, textvariable=self.client_name_var,font=(10), width=30, justify="center")
+        self.usuario.pack()
+
+        self.label_password = Label(self.q_frame, text="Contraseña:", bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", justify="center")
+        self.label_password.pack()
+
+        self.password_var = StringVar()
+        self.entry_password = Entry(self.q_frame, show="*", justify="center", width=30, textvariable=self.password_var)
+        self.entry_password.pack()
 
         self.usuario.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
 
         self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
+        self.password_var.trace("w", self.enable_button)
 
         self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
 
@@ -224,51 +241,58 @@ class MainWindow:
         self.button_serie.pack(side=RIGHT, padx=15)
 
         self.next_button["state"] = "disabled" # Desactivar el botón inicial
+        self.next_button.config(text="Continuar", command=self.next_view)
+
+        self.reset_button.pack_forget()
 
     def view3(self): # Vista Num. 3.
         """Vista que permite dar la primera eleccion de las preferencias de busqueda."""
         self.label.destroy()
         self.q_frame2.destroy()
+        self.questions = self.app.question[0]
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
         self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[0]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10, padx=15)
-        self.app.select_options(self.app.question[0])
-
-        self.reset_button = Button(self.frame2, text="Recargar", command=self.refresh_button, width=12, height=1, bg="#240B37", font=("Bebas neue", 14, "bold"), fg="White", borderwidth=0) # Botón dinámico para avanzar
-        self.reset_button.pack(side="left", anchor="s", padx=10, pady=10)
+        self.app.select_options(self.questions)
 
         self.botones()
+        self.reset_button.config(text="Refrescar", command=self.refresh_button)
+        self.reset_button.pack(side="left", anchor="s", padx=10, pady=10)
  
     def view4(self):  # Vista Num. 4.
         """Vista que permite dar la segunda eleccion de las preferencias de busqueda."""
         self.q_frame2.destroy()
+        self.questions = self.app.question[1]        
+        self.app.select_options(self.questions)
         for item in self.lista_seleccionados:
             self.respuesta1.append(str(item))
         self.lista_seleccionados = []
+
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
         self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[1]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
 
-        self.app.select_options(self.app.question[1])
         self.botones()
 
     def view5(self): # Vista Num. 5.
         """Vista que permite dar la tercera eleccion de las preferencias de busqueda."""
         self.q_frame2.destroy()
+        self.questions = self.app.question[2]
+        self.app.select_options(self.questions)
         for item in self.lista_seleccionados:
             self.respuesta2.append(str(item))
         self.lista_seleccionados = []
+
         self.question_label_1 = Label(self.q_frame, text=self.selection.upper(), bg="#240B37", font=("Bebas neue", 16, "bold"), fg="White", borderwidth=0)
         self.question_label_1.pack(side="top", pady=15)
 
         self.question_label_2 = Label(self.q_frame, text=f"  {self.app.question_text[2]}  ", bg="White", font=("Bebas neue", 16, "bold"), fg="Black", borderwidth=0, height=2)
         self.question_label_2.pack(side="top", pady=10)
 
-        self.app.select_options(self.app.question[2])
         self.botones()
 
     def view6(self): # Vista Num. 6 y final.
@@ -290,6 +314,51 @@ class MainWindow:
 
 
         self.reset_button.configure(text="Reiniciar", command=self.reset)
+
+    def create_table(self):
+        # Crear la tabla de usuarios si no existe
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                usuario TEXT NOT NULL,
+                password TEXT NOT NULL
+            )
+        ''')
+        self.conn.commit()
+
+    def login(self):
+        usuario = self.usuario.get()
+        password = self.entry_password.get()
+
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM usuarios WHERE usuario=? AND password=?", (usuario, password))
+        user = cursor.fetchone()
+
+        if user:
+            self.next_view()
+        else:
+            messagebox.showerror("NetflixPicks - Error", "Usuario o contraseña incorrectos.")
+
+    def register(self):
+        usuario = self.usuario.get()
+        password = self.entry_password.get()
+
+        cursor = self.conn.cursor()
+
+        # Verificar si el usuario ya existe
+        cursor.execute("SELECT * FROM usuarios WHERE usuario=?", (usuario,))
+        existing_user = cursor.fetchone()
+
+        if existing_user:
+            messagebox.showerror("NetflixPicks - Error", "El usuario ya existe.")
+        else:
+            # Insertar el nuevo usuario solo si no existe
+            cursor.execute("INSERT INTO usuarios (usuario, password) VALUES (?, ?)", (usuario, password))
+            self.conn.commit()
+            messagebox.showinfo("NetflixPicks - Éxito", "Registro exitoso.")
+
+        cursor.close()
 
 def main():
     root = Tk()
