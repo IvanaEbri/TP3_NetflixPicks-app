@@ -38,7 +38,7 @@ class MainWindow:
         self.setup_window()
         self.create_widgets()
         self.ini_window()
-        self.conn = sqlite3.connect("usuarios.db")
+        self.conn = sqlite3.connect("./db/usuarios.db")
         self.create_table()
 
     def setup_window(self): # Configurar la ventana principal.
