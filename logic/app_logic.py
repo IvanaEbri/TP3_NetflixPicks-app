@@ -16,7 +16,7 @@ class NetflixPicks ():
         self.button3 = ""
         self.button4 = ""
         #texto de pegunta que corresponde al mismo indice que la pregunta
-        self.question_text = ["Seleccione los genero que prefiere", "Seleccione que resticcion de edad prefiere", "Seleccione de que paises productores prefiere"]
+        self.question_text = ["Seleccione los genero que prefiere", "Seleccione que su preferencia", "Seleccione de que paises productores prefiere"]
 
         """Comunication será el diccionario que se edita con la infor desde el front para comuinicarse con el back y poder realizar los filtros pertinentes"""
         self.comunication = {
@@ -84,11 +84,11 @@ class NetflixPicks ():
             edades=[]
             producciones=[]
             for elem in res_generos:
-                generos.append(MainGenre.get(MainGenre.genre == elem).get_id())
+                generos.append(MainGenre.get(MainGenre.genero == elem).get_id())
             for elem in res_edades:
-                edades.append(AgeCertification.get(AgeCertification.age_certification == elem).get_id())
+                edades.append(AgeCertification.get(AgeCertification.certificacion == elem).get_id())
             for elem in res_producciones:
-                producciones.append(MainProduction.get(MainProduction.production == elem).get_id())
+                producciones.append(MainProduction.get(MainProduction.produccion == elem).get_id())
 
             if self.comunication[self.selected] ==self.selection[0]:
                 resultados=list(table.select().where(

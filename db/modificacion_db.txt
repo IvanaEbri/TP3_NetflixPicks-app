@@ -1,0 +1,60 @@
+UPDATE films_netflix SET film_production_id= 6 WHERE id_film=204;
+DELETE FROM productions WHERE production= "XX";
+
+
+ALTER TABLE productions ADD COLUMN "produccion" TEXT;
+UPDATE productions SET produccion = "GRAN BRETAÑA" WHERE production = "GB";
+UPDATE productions SET produccion = "ESTADOS UNIDOS" WHERE production = "US";
+UPDATE productions SET produccion = "INDIA" WHERE production = "IN";
+UPDATE productions SET produccion = "ESPAÑA" WHERE production = "ES";
+UPDATE productions SET produccion = "JAPON" WHERE production = "JP";
+UPDATE productions SET produccion = "TURQUIA" WHERE production = "TR";
+UPDATE productions SET produccion = "HONG KONG" WHERE production = "HK";
+UPDATE productions SET produccion = "ALEMANIA" WHERE production = "DE";
+UPDATE productions SET produccion = "CANADA" WHERE production = "CA";
+UPDATE productions SET produccion = "BELGICA" WHERE production = "BE";
+UPDATE productions SET produccion = "NORUEGA" WHERE production = "NO";
+UPDATE productions SET produccion = "NUEVA ZELANDA" WHERE production = "NZ";
+UPDATE productions SET produccion = "MEXICO" WHERE production = "MX";
+UPDATE productions SET produccion = "FRANCIA" WHERE production = "FR";
+UPDATE productions SET produccion = "TAILANDIA" WHERE production = "TH";
+UPDATE productions SET produccion = "ITALIA" WHERE production = "IT";
+UPDATE productions SET produccion = "CHINA" WHERE production = "CN";
+UPDATE productions SET produccion = "COREA DEL SUR" WHERE production = "KR";
+UPDATE productions SET produccion = "AUSTRALIA" WHERE production = "AU";
+UPDATE productions SET produccion = "CAMBOYA" WHERE production = "KH";
+UPDATE productions SET produccion = "PAISES BAJOS" WHERE production = "NL";
+UPDATE productions SET produccion = "HUNGRIA" WHERE production = "HU";
+UPDATE productions SET produccion = "INDONESIA" WHERE production = "ID";
+UPDATE productions SET produccion = "DINAMARCA" WHERE production = "DK";
+UPDATE productions SET produccion = "ISRAEL" WHERE production = "IL";
+UPDATE productions SET produccion = "SUECIA" WHERE production = "SE";
+UPDATE productions SET produccion = "BRASIL" WHERE production = "BR";
+UPDATE productions SET produccion = "FINLANDIA" WHERE production = "FI";
+
+
+ALTER TABLE genres ADD COLUMN "genero" TEXT;
+UPDATE genres SET genero = "DOCUMENTAL" WHERE genre = "documentary";
+UPDATE genres SET genero = "SCI-FI" WHERE genre = "scifi";
+UPDATE genres SET genero = "DRAMA" WHERE genre = "drama";
+UPDATE genres SET genero = "COMEDIA" WHERE genre = "comedy";
+UPDATE genres SET genero = "WESTERN" WHERE genre = "western";
+UPDATE genres SET genero = "ACCION" WHERE genre = "action";
+UPDATE genres SET genero = "CRIMINAL" WHERE genre = "crime";
+UPDATE genres SET genero = "THRILLER" WHERE genre = "thriller";
+UPDATE genres SET genero = "FANTASIA" WHERE genre = "fantasy";
+UPDATE genres SET genero = "ROMANCE" WHERE genre = "romance";
+UPDATE genres SET genero = "HORROR" WHERE genre = "horror";
+UPDATE genres SET genero = "GUERRA" WHERE genre = "war";
+UPDATE genres SET genero = "ANIMACION" WHERE genre = "animation";
+UPDATE genres SET genero = "MUSICAL" WHERE genre = "musical";
+UPDATE genres SET genero = "REALITY" WHERE genre = "reality";
+
+
+ALTER TABLE age_certifications ADD COLUMN "certificacion" TEXT;
+UPDATE age_certifications  SET certificacion = "AVENTURA FAMILIAR" WHERE age_certification in ("PG","TV-PG");
+UPDATE age_certifications  SET certificacion = "JUVENTUD EN ACCION" WHERE age_certification in ("PG-13","TV-14");
+UPDATE age_certifications  SET certificacion = "SOLO ADULTOS" WHERE age_certification = "R";
+UPDATE age_certifications  SET certificacion = "EMOCION ADOLESCENTE" WHERE age_certification IN ("NC-17", "TV-MA");
+UPDATE age_certifications  SET certificacion = "NIÑOS Y MAS" WHERE age_certification IN ("G", "TV-G");
+UPDATE age_certifications  SET certificacion = "EXPLORADORES JOVENES" WHERE age_certification = "TV-Y7";

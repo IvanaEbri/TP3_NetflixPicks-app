@@ -19,9 +19,10 @@ class MainGenre(BaseModel):
     """Entidad Genero principal"""
     id_genre = AutoField(primary_key = True)
     genre = TextField(unique = True, null = False)
+    genero = TextField(unique = True, null = False)
     
     def __str__(self):
-        return self.genre
+        return self.genero
     
     def get_id(self):
         return self.id_genre
@@ -33,9 +34,10 @@ class MainProduction (BaseModel):
     """Entidad Produccion principal"""
     id_production = AutoField(primary_key = True)
     production = TextField(unique = True, null = False)
+    produccion = TextField(unique = True, null = False)
     
     def __str__(self):
-        return self.production
+        return self.produccion
 
     def get_id(self):
         return self.id_production
@@ -47,9 +49,10 @@ class AgeCertification (BaseModel):
     """Entidad Clasificacion de edad"""
     id_age_certification = AutoField(primary_key = True)
     age_certification = TextField(unique = True, null = False)
-    
+    certificacion = TextField(unique = True, null = False)
+
     def __str__(self):
-        return self.age_certification
+        return self.certificacion
 
     def get_id(self):
         return self.id_age_certification
