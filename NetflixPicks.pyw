@@ -2,7 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 import Pmw
 from PIL import Image, ImageTk
-from app_logic import *
+from logic.app_logic import *
 import sqlite3
 
 class MainWindow:

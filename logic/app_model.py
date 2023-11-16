@@ -1,6 +1,6 @@
 from peewee import *
 
-sqlite_db = SqliteDatabase('./netflixpicks_app.db', pragmas={'journal_mode': 'wal'})
+sqlite_db = SqliteDatabase('.//db/netflixpicks_app.db', pragmas={'journal_mode': 'wal'})
 
 try:
     """Intento de conexion a la base de datos"""

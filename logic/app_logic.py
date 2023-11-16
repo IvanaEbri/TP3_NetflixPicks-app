@@ -1,5 +1,5 @@
 from peewee import *
-from app_model import *
+from logic.app_model import *
 import random
 
 class NetflixPicks ():
