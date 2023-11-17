@@ -5,3 +5,13 @@ El propósito fundamental consiste en perfeccionar una aplicación operativa de 
 
 Al encontrarse en etapa de prueba se encuenran generados usuarios de prueba, mas alla de que se pueden crear usuarios nuevos. Se puede probar con usuario "prueba" y contraseña "1234".
 
+Se utilizaron varias bibliotecas para el desarrollo de la presente aplicación. Se detallan a continuacion:
+
+PAQUETE     VERSION     INSTALADOR
+pandas      2.0.2       pip install pandas
+peewee      3.16.2      pip install peewee
+Pill        10.0.0      pip install Pillow
+Pmw         2.1.1       pip install Pmw
+tKinter     8.6.12      pip install tk
+sqlite3     Incluido    Se instala con Python
+
