@@ -52,9 +52,9 @@ UPDATE genres SET genero = "REALITY" WHERE genre = "reality";
 
 
 ALTER TABLE age_certifications ADD COLUMN "certificacion" TEXT;
-UPDATE age_certifications  SET certificacion = "AVENTURA FAMILIAR" WHERE age_certification in ("PG","TV-PG");
-UPDATE age_certifications  SET certificacion = "JUVENTUD EN ACCION" WHERE age_certification in ("PG-13","TV-14");
-UPDATE age_certifications  SET certificacion = "SOLO ADULTOS" WHERE age_certification = "R";
-UPDATE age_certifications  SET certificacion = "EMOCION ADOLESCENTE" WHERE age_certification IN ("NC-17", "TV-MA");
-UPDATE age_certifications  SET certificacion = "NIÑOS Y MAS" WHERE age_certification IN ("G", "TV-G");
-UPDATE age_certifications  SET certificacion = "EXPLORADORES JOVENES" WHERE age_certification = "TV-Y7";
+UPDATE age_certifications  SET certificacion = "FAMILIAR" WHERE age_certification in ("PG","TV-PG");
+UPDATE age_certifications  SET certificacion = "TEENS" WHERE age_certification in ("PG-13","TV-14");
+UPDATE age_certifications  SET certificacion = "RESTRINGIDA" WHERE age_certification = "R";
+UPDATE age_certifications  SET certificacion = "JUVENIL" WHERE age_certification IN ("NC-17", "TV-MA");
+UPDATE age_certifications  SET certificacion = "GENERAL" WHERE age_certification IN ("G", "TV-G");
+UPDATE age_certifications  SET certificacion = "NIÑOS" WHERE age_certification = "TV-Y7";
