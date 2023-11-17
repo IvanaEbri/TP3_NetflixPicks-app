@@ -38,7 +38,7 @@ class MainWindow:
         self.setup_window()
         self.create_widgets()
         self.ini_window()
-        self.conn = sqlite3.connect("./db/usuarios.db")
+        self.conn = sqlite3.connect(r".\\db\\usuarios.db")
         self.create_table()
 
     def setup_window(self): # Configurar la ventana principal.
@@ -164,16 +164,16 @@ class MainWindow:
         self.actualizar_boton()
         
     def botones(self): # Funcion que crea los botones segun lo que se necesite. 
-        self.button_a = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_a, self.app.button1), text=self.app.button1, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_a = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_a, self.app.button1), text=self.app.button1, width=12, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black", wraplength=100)
         self.button_a.pack(side="left", padx=15, pady=20)
 
-        self.button_b = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_b, self.app.button2), text=self.app.button2, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_b = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_b, self.app.button2), text=self.app.button2, width=12, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black", wraplength=100)
         self.button_b.pack(side="left", padx=15, pady=20)
 
-        self.button_c = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_c, self.app.button3), text=self.app.button3, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_c = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_c, self.app.button3), text=self.app.button3, width=12, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black", wraplength=100)
         self.button_c.pack(side="left", padx=15, pady=20)
 
-        self.button_d = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_d, self.app.button4), text=self.app.button4, width=10, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black")
+        self.button_d = Button(self.q_frame, relief="raised", command=lambda : self.apretar_button(self.button_d, self.app.button4), text=self.app.button4, width=12, height=2, compound="center", bg="White", font=("Bebas neue", 12, "bold"), fg="Black", wraplength=100)
         self.button_d.pack(side="left", padx=15, pady=20)
 
     def actualizar_boton(self): # Funcion que actualiza el estado del boton. 
@@ -216,7 +216,7 @@ class MainWindow:
         self.entry_password = Entry(self.q_frame, show="*", justify="center", width=30, textvariable=self.password_var)
         self.entry_password.pack()
 
-        self.usuario.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
+        self.entry_password.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
 
         self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
         self.password_var.trace("w", self.enable_button)
@@ -225,6 +225,7 @@ class MainWindow:
 
         if self.client_name != "":
             self.next_view()
+            self.reset_button["state"] = NORMAL
 
     def view2(self): # Vista Num. 2.
         """Vista de bienvenida con las opciones para elegir la asistencia."""
@@ -315,8 +316,7 @@ class MainWindow:
 
         self.reset_button.configure(text="Reiniciar", command=self.reset)
 
-    def create_table(self):
-        # Crear la tabla de usuarios si no existe
+    def create_table(self): # Crear la tabla de usuarios si no existe.        
         cursor = self.conn.cursor()
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS usuarios (
@@ -327,7 +327,7 @@ class MainWindow:
         ''')
         self.conn.commit()
 
-    def login(self):
+    def login(self): # Verificar el logueo. 
         usuario = self.usuario.get()
         password = self.entry_password.get()
 
@@ -340,7 +340,7 @@ class MainWindow:
         else:
             messagebox.showerror("NetflixPicks - Error", "Usuario o contraseña incorrectos.")
 
-    def register(self):
+    def register(self): # Registrar en caso de que no exista. 
         usuario = self.usuario.get()
         password = self.entry_password.get()
 
