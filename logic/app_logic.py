@@ -42,10 +42,11 @@ class NetflixPicks ():
             table = self.get_table(question)
             #selecciono la tabla, ordeno de manera random y tomo los primeros 4 resultados, convierto esto a una lista y asigno a las variables de boton
             query = list(table.select().order_by(fn.Random()).limit(4))
-            self.button1 = query[0]
-            self.button2 = query[1]
-            self.button3 = query[2]
-            self.button4 = query[3]
+            botones = self.certificacion_sin_dups(question,query)
+            self.button1 = botones[0]
+            self.button2 = botones[1]
+            self.button3 = botones[2]
+            self.button4 = botones[3]
         except NameError as e:
             print("La clave pasada es erronea. ", e)
         except OperationalError as e:
@@ -111,3 +112,19 @@ class NetflixPicks ():
             print("Los paramtros seleccionados no son correctos.",e)
         '''except Exception as e:
             print("Error sin definir aún. Eevee is working here", e)'''
+
+    def certificacion_sin_dups(self,question, query):
+        if (question == "edad"):
+            lista = []
+            for elem in query:
+                lista.append(elem.__str__())
+            lista = set(lista)
+            while len(lista)!= 4:
+                subquery= list(AgeCertification.select().order_by(fn.Random()).limit(1))
+                try:
+                    for elem in subquery:
+                        lista.add(elem.__str__())
+                except Exception as e:
+                    print(e)
+            query=list(lista)
+        return query
