@@ -16,7 +16,7 @@ class NetflixPicks ():
         self.button3 = ""
         self.button4 = ""
         #texto de pegunta que corresponde al mismo indice que la pregunta
-        self.question_text = ["Seleccione los genero que prefiere", "Seleccione que su preferencia", "Seleccione de que paises productores prefiere"]
+        self.question_text = ["Seleccione los genero que prefiere", "Seleccione el tipo de público de su preferencia", "Seleccione de que paises productores prefiere"]
 
         """Comunication será el diccionario que se edita con la infor desde el front para comuinicarse con el back y poder realizar los filtros pertinentes"""
         self.comunication = {
