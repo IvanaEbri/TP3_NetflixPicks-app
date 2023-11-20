@@ -192,6 +192,10 @@ class MainWindow:
                 self.result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
                 self.result_label.pack(pady=5, expand=True, padx=30)
 
+    def show_password(self, event):
+        # Mostrar la contraseña cuando se presiona el botón
+        self.entry_password.config(show="")
+
     def view1(self): # Vista Num. 1.
         """Vista inicial que permite conocer a quien se va a asistir."""
         self.label = Label(self.frame1, image=self.imagen, borderwidth=0)
@@ -216,10 +220,17 @@ class MainWindow:
         self.entry_password = Entry(self.q_frame, show="*", justify="center", width=30, textvariable=self.password_var)
         self.entry_password.pack()
 
+        # Botón de ojo
+        self.eye_button = Button(self.entry_password, text="👁", font=("Bebas neue", 12, "bold"), command=self.toggle_show_password, justify="center", bg="White", border=0)
+        self.eye_button.place(relx=1.0, rely=-0.4, anchor="ne")
+
         self.entry_password.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
 
         self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
         self.password_var.trace("w", self.enable_button)
+
+        self.eye_button.bind("<ButtonPress>", self.show_password)
+        self.eye_button.bind("<ButtonRelease>", self.entry_password.config(show="*"))
 
         self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
 
