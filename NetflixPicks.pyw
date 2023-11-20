@@ -192,6 +192,11 @@ class MainWindow:
                 self.result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
                 self.result_label.pack(pady=5, expand=True, padx=30)
 
+    def toggle_show_password(self):
+        current_show_state = self.entry_password.cget("show")
+        new_show_state = "" if current_show_state == "*" else "*"
+        self.entry_password.config(show=new_show_state)
+
     def show_password(self, event):
         # Mostrar la contraseña cuando se presiona el botón
         self.entry_password.config(show="")
