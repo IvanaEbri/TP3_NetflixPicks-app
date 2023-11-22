@@ -191,15 +191,16 @@ class MainWindow:
             for i in range(len(self.resultado)):
                 self.result_label = Label(self.root, text=str(self.resultado[i]), bg="White", font=("Bebas neue", 14, "bold"), fg="Black", borderwidth=0, width=self.root.winfo_reqwidth())
                 self.result_label.pack(pady=5, expand=True, padx=30)
-
-    def toggle_show_password(self):
+        
+    def show_password(self, event=None): # Mostrar la contraseña cuando se presiona el botón. 
         current_show_state = self.entry_password.cget("show")
-        new_show_state = "" if current_show_state == "*" else "*"
-        self.entry_password.config(show=new_show_state)
+        self.new_show_state = "" if current_show_state == "*" else "*"
+        self.entry_password.config(show=self.new_show_state)
 
-    def show_password(self, event):
-        # Mostrar la contraseña cuando se presiona el botón
-        self.entry_password.config(show="")
+    def cover_password(self, event=None): # Ocultar la contraseña cuando se presiona el botón
+        current_show_state = self.entry_password.cget("show")
+        self.new_show_state = "*" if current_show_state == "" else ""
+        self.entry_password.config(show=self.new_show_state)
 
     def view1(self): # Vista Num. 1.
         """Vista inicial que permite conocer a quien se va a asistir."""
@@ -226,18 +227,21 @@ class MainWindow:
         self.entry_password.pack()
 
         # Botón de ojo
-        self.eye_button = Button(self.entry_password, text="👁", font=("Bebas neue", 12, "bold"), command=self.toggle_show_password, justify="center", bg="White", border=0)
+        self.eye_button = Button(self.entry_password, text="👁", font=("Bebas neue", 12, "bold"), justify="center", bg="White", border=0)
         self.eye_button.place(relx=1.0, rely=-0.4, anchor="ne")
+
+        self.eye_button.bind("<ButtonPress>", lambda event=None: self.show_password())
+        self.eye_button.bind("<ButtonRelease>", lambda event=None: self.cover_password())
 
         self.entry_password.bind("<Return>", lambda event=None: self.next_button.invoke()) # Vincular el evento Enter en el cuadro de texto al botón
 
         self.client_name_var.trace("w", self.enable_button)  # Verificar cuando se ingresa un nombre
         self.password_var.trace("w", self.enable_button)
 
-        self.eye_button.bind("<ButtonPress>", self.show_password)
-        self.eye_button.bind("<ButtonRelease>", self.entry_password.config(show="*"))
-
         self.usuario.focus_set() # Colocar el cursor en el cuadro de texto al abrir la ventana
+
+        balloon_ver = Pmw.Balloon(self.root) # Decorador con la info del boton
+        balloon_ver.bind(self.eye_button, "Mostrar")
 
         if self.client_name != "":
             self.next_view()
@@ -329,6 +333,8 @@ class MainWindow:
         self.mostrar_resultados()
         self.current_view = 1
 
+        balloon_rest = Pmw.Balloon(self.root) # Decorador con la info del boton
+        balloon_rest.bind(self.reset_button, "Volver a empezar")
 
         self.reset_button.configure(text="Reiniciar", command=self.reset)
 
